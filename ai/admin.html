@@ -2606,6 +2606,7 @@ async function detectImage(file) {
     document.addEventListener('DOMContentLoaded', function() {
       renderApiTable();
       // renderStatsTable(); // 暂时注释掉这个未定义的函数调用
+      renderStatsTable();
       renderIpWhitelistTable();
       renderIpBlacklistTable();
       initializeDashboardData();
@@ -2829,6 +2830,59 @@ async function detectImage(file) {
     }
     
     // 初始化页面内容
+  </script>
+
+  <!-- 添加或移除暗黑模式 -->
+  <script>
+    function toggleDarkMode() {
+      const isDarkMode = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('darkMode', isDarkMode);
+      
+      // 更新图表模式（如果使用图表）
+      updateChartsTheme(isDarkMode);
+      
+      // 不再尝试直接访问stylesheet.cssRules，改用CSS变量
+      // const stylesheets = document.styleSheets;
+      // for (let i = 0; i < stylesheets.length; i++) {
+      //   try {
+      //     const stylesheet = stylesheets[i];
+      //     if (stylesheet.href && stylesheet.href.includes('tailwind')) {
+      //       for (let j = 0; j < stylesheet.cssRules.length; j++) {
+      //         const rule = stylesheet.cssRules[j];
+      //         // 处理规则
+      //       }
+      //     }
+      //   } catch (e) {
+      //     console.warn('无法访问样式表规则:', e);
+      //   }
+      // }
+    }
+    
+    // 初始化暗黑模式
+    function initDarkMode() {
+      const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+      if (savedDarkMode) {
+        document.documentElement.classList.add('dark');
+        // 更新图表模式
+        updateChartsTheme(true);
+      }
+    }
+    
+    // 初始化暗黑模式
+    initDarkMode();
+
+    // 更新图表主题
+    function updateChartsTheme(isDarkMode) {
+      // 这里可以根据实际使用的图表库添加更新主题的代码
+      // 例如，如果使用Chart.js：
+      // if (window.myCharts) {
+      //   for (let chart of window.myCharts) {
+      //     chart.options.theme = isDarkMode ? 'dark' : 'light';
+      //     chart.update();
+      //   }
+      // }
+      console.log('更新图表主题:', isDarkMode ? '暗色' : '亮色');
+    }
   </script>
 </body>
 </html>
