@@ -2795,6 +2795,40 @@ async function detectImage(file) {
       });
       this.classList.add('active-menu');
     });
+
+    // 统计数据渲染函数
+    function renderStatsTable() {
+      // 模拟统计数据
+      const statsData = {
+        totalRequests: 8942,
+        successRate: 98.7,
+        avgResponseTime: 245,
+        errorCount: 116,
+        uniqueUsers: 512,
+        topAPIs: [
+          { name: 'AIORNOT API', calls: 4231 },
+          { name: 'Google Vision API', calls: 2876 },
+          { name: 'OpenAI', calls: 983 },
+          { name: 'DeepAI', calls: 852 }
+        ]
+      };
+      
+      // 这里可以根据实际需要添加渲染统计表格的代码
+      console.log('统计数据已加载:', statsData);
+      
+      // 如果页面中有对应的表格元素，可以将数据渲染到其中
+      // 例如：
+      // const statsTable = document.getElementById('statsTable');
+      // if (statsTable) {
+      //   let html = '';
+      //   statsData.topAPIs.forEach(api => {
+      //     html += `<tr><td>${api.name}</td><td>${api.calls}</td></tr>`;
+      //   });
+      //   statsTable.innerHTML = html;
+      // }
+    }
+    
+    // 初始化页面内容
   </script>
 </body>
 </html>
