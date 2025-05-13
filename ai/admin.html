@@ -1,0 +1,2800 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>AI智能識別平台 - 管理後台</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Tailwind CSS - 生产环境下建议使用此本地版本 -->
+  <!-- 注意: 实际生产环境需要使用npm或yarn安装Tailwind，并通过PostCSS构建 -->
+  <!-- 此处仍使用CDN但添加说明注释，真正部署时应替换为本地构建版本 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  
+  <script>
+    // Tailwind自定义配置
+    // 注意: 生产环境应通过tailwind.config.js配置
+    const twColors = {
+      primary: { DEFAULT: '#1890ff', 600: '#0d7ae6' },
+      secondary: { DEFAULT: '#1E293B', 600: '#0F172A' },
+      success: { DEFAULT: '#10B981', 600: '#059669' },
+      warning: { DEFAULT: '#F59E0B', 600: '#D97706' },
+      danger: { DEFAULT: '#EF4444', 600: '#DC2626' }
+    };
+    
+    // 在没有使用tailwind.config.js的情况下添加一些自定义CSS变量
+    document.documentElement.style.setProperty('--color-primary', twColors.primary.DEFAULT);
+    document.documentElement.style.setProperty('--color-primary-600', twColors.primary[600]);
+    document.documentElement.style.setProperty('--color-success', twColors.success.DEFAULT);
+    document.documentElement.style.setProperty('--color-warning', twColors.warning.DEFAULT);
+    document.documentElement.style.setProperty('--color-danger', twColors.danger.DEFAULT);
+  </script>
+  
+  <!-- 添加额外的CSS以支持自定义主题 -->
+  <style>
+    :root {
+      --color-primary: #1890ff;
+      --color-primary-600: #0d7ae6;
+      --color-secondary: #1E293B;
+      --color-secondary-600: #0F172A;
+      --color-success: #10B981;
+      --color-success-600: #059669;
+      --color-warning: #F59E0B;
+      --color-warning-600: #D97706;
+      --color-danger: #EF4444;
+      --color-danger-600: #DC2626;
+    }
+    
+    .text-primary { color: var(--color-primary); }
+    .bg-primary { background-color: var(--color-primary); }
+    .hover\:bg-primary:hover { background-color: var(--color-primary); }
+    .hover\:text-primary:hover { color: var(--color-primary); }
+    .hover\:border-primary:hover { border-color: var(--color-primary); }
+    .focus\:ring-primary:focus { --tw-ring-color: var(--color-primary); }
+    .bg-primary-600 { background-color: var(--color-primary-600); }
+    .hover\:bg-primary-600:hover { background-color: var(--color-primary-600); }
+    
+    .bg-primary\/90 { background-color: rgba(24, 144, 255, 0.9); }
+    .bg-primary\/80 { background-color: rgba(24, 144, 255, 0.8); }
+    .hover\:bg-primary\/80:hover { background-color: rgba(24, 144, 255, 0.8); }
+    
+    .text-secondary { color: var(--color-secondary); }
+    .bg-secondary { background-color: var(--color-secondary); }
+    
+    .text-success-500, .text-success { color: var(--color-success); }
+    .hover\:text-success-600:hover, .hover\:text-success:hover { color: var(--color-success-600); }
+    .bg-success-500, .bg-success { background-color: var(--color-success); }
+    .text-warning-500, .text-warning { color: var(--color-warning); }
+    .hover\:text-warning-600:hover, .hover\:text-warning:hover { color: var(--color-warning-600); }
+    .bg-warning-500, .bg-warning { background-color: var(--color-warning); }
+    .text-danger-500, .text-danger { color: var(--color-danger); }
+    .hover\:text-danger-600:hover, .hover\:text-danger:hover { color: var(--color-danger-600); }
+    .bg-danger-500, .bg-danger { background-color: var(--color-danger); }
+  </style>
+  
+  <!-- 替换为空注释 -->
+  <!-- Tailwind配置已移除，改用CSS变量实现 -->
+
+  <!-- 添加必要的样式 -->
+  <style>
+    .sidebar-scroll { scrollbar-width: thin; scrollbar-color: #334155 #1e293b; }
+    .sidebar-scroll::-webkit-scrollbar { width: 6px; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: #1e293b; }
+    
+    .card {
+      border-radius: 0.5rem;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    }
+    
+    .dark .card {
+      border-color: #374151;
+    }
+    
+    .table-fixed thead th { 
+      position: sticky; 
+      top: 0; 
+      background: inherit;
+      z-index: 10;
+    }
+    
+    .active-menu {
+      background-color: rgba(24, 144, 255, 0.9);
+      color: white;
+    }
+    
+    .active-menu:hover {
+      background-color: var(--color-primary);
+      color: white;
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.125rem 0.625rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .badge-success {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: rgb(6, 95, 70);
+    }
+    
+    .dark .badge-success {
+      background-color: rgba(6, 78, 59, 0.5);
+      color: rgb(110, 231, 183);
+    }
+    
+    .badge-warning {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: rgb(146, 64, 14);
+    }
+    
+    .dark .badge-warning {
+      background-color: rgba(120, 53, 15, 0.5);
+      color: rgb(252, 211, 77);
+    }
+    
+    .badge-danger {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: rgb(153, 27, 27);
+    }
+    
+    .dark .badge-danger {
+      background-color: rgba(127, 29, 29, 0.5);
+      color: rgb(248, 113, 113);
+    }
+    
+    .badge-info {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: rgb(30, 64, 175);
+    }
+    
+    .dark .badge-info {
+      background-color: rgba(30, 58, 138, 0.5);
+      color: rgb(96, 165, 250);
+    }
+    
+    .table-row-hover:hover {
+      background-color: rgba(243, 244, 246, 1);
+    }
+    
+    .dark .table-row-hover:hover {
+      background-color: rgba(55, 65, 81, 0.5);
+    }
+    
+    .table-row-even {
+      background-color: white;
+    }
+    
+    .dark .table-row-even {
+      background-color: rgb(31, 41, 55);
+    }
+    
+    .table-row-odd {
+      background-color: rgba(249, 250, 251, 1);
+    }
+    
+    .dark .table-row-odd {
+      background-color: rgba(31, 41, 55, 0.5);
+    }
+    
+    .fixed {
+      position: fixed;
+    }
+    
+    .inset-0 {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+    
+    .bg-opacity-50 {
+      --tw-bg-opacity: 0.5;
+    }
+    
+    .z-50 {
+      z-index: 50;
+    }
+    
+    .w-96 {
+      width: 24rem;
+    }
+    
+    .space-x-3 > * + * {
+      margin-left: 0.75rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+  <!-- 頂部欄 -->
+  <header class="flex items-center h-16 px-6 bg-white dark:bg-gray-800 shadow-md z-20 fixed w-full left-0 top-0">
+    <span class="text-2xl text-primary font-['Pacifico'] mr-8">HMTGSS管理</span>
+    <div class="flex-1 flex items-center">
+      <div class="relative w-72">
+        <input type="text" placeholder="全局搜索..." class="w-full pl-10 pr-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+        <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+      </div>
+    </div>
+    <button id="notificationBtn" class="mx-4 text-gray-500 hover:text-primary relative">
+      <i class="fa-regular fa-bell text-xl"></i>
+      <span class="absolute -top-1 -right-1 bg-danger-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+    </button>
+    <button id="themeToggle" class="mx-2 text-gray-500 hover:text-primary p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" title="切換主題">
+      <i class="fa-solid fa-moon hidden dark:inline"></i>
+      <i class="fa-solid fa-sun inline dark:hidden"></i>
+    </button>
+    <div class="ml-4 flex items-center space-x-2 group relative">
+      <div class="flex items-center space-x-2 cursor-pointer">
+        <i class="fa-solid fa-user-circle text-2xl text-gray-600 dark:text-gray-300"></i>
+        <span class="text-gray-700 dark:text-gray-200 text-sm">管理員</span>
+        <i class="fa-solid fa-chevron-down text-xs text-gray-400"></i>
+      </div>
+      <div class="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-30 hidden group-hover:block">
+        <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">個人資料</a>
+        <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">系統設置</a>
+        <button id="logoutBtn" class="w-full text-left px-4 py-2 text-sm text-danger-600 dark:text-danger-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+          <i class="fa-solid fa-right-from-bracket mr-2"></i>登出系統
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <!-- 左側導航 -->
+  <aside class="fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-secondary dark:bg-gray-800 text-white flex flex-col sidebar-scroll z-10">
+    <nav class="flex-1 overflow-y-auto py-4">
+      <ul class="space-y-1">
+        <!-- 仪表盘 -->
+        <li>
+          <div class="px-4 py-2 text-xs text-gray-400 uppercase tracking-wider">仪表盘</div>
+          <ul>
+            <li><a id="menu-dashboard" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition active-menu"><i class="fa-solid fa-gauge-high mr-3 w-5 text-center"></i>数据概览</a></li>
+          </ul>
+        </li>
+        <li>
+          <div class="px-4 py-2 text-xs text-gray-400 uppercase tracking-wider">API管理</div>
+          <ul>
+            <li><a id="menu-api" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-key mr-3 w-5 text-center"></i>API密鑰管理</a></li>
+            <li><a id="menu-api-config" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-cogs mr-3 w-5 text-center"></i>接口配置</a></li>
+            <li><a id="menu-api-access" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-user-shield mr-3 w-5 text-center"></i>訪問控制</a></li>
+            <li><a id="menu-api-version" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-code-branch mr-3 w-5 text-center"></i>版本管理</a></li>
+          </ul>
+        </li>
+        <li>
+          <div class="px-4 py-2 text-xs text-gray-400 uppercase tracking-wider">統計分析</div>
+          <ul>
+            <li><a id="menu-stat" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-chart-pie mr-3 w-5 text-center"></i>數據概覽</a></li>
+            <li><a id="menu-stat-call" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-chart-line mr-3 w-5 text-center"></i>調用統計</a></li>
+            <li><a id="menu-stat-perf" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-tachometer-alt mr-3 w-5 text-center"></i>性能監控</a></li>
+            <li><a id="menu-stat-error" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-bug mr-3 w-5 text-center"></i>錯誤日誌</a></li>
+          </ul>
+        </li>
+        <li>
+          <div class="px-4 py-2 text-xs text-gray-400 uppercase tracking-wider">用戶管理</div>
+          <ul>
+            <li><a id="menu-user" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-users mr-3 w-5 text-center"></i>用戶列表</a></li>
+            <li><a id="menu-user-role" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-user-tag mr-3 w-5 text-center"></i>角色權限</a></li>
+            <li><a id="menu-user-log" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-clipboard-list mr-3 w-5 text-center"></i>操作日誌</a></li>
+            <li><a id="menu-user-black" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-user-slash mr-3 w-5 text-center"></i>黑名單管理</a></li>
+          </ul>
+        </li>
+        <li>
+          <div class="px-4 py-2 text-xs text-gray-400 uppercase tracking-wider">系統信息</div>
+          <ul>
+            <li><a id="menu-system" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-cog mr-3 w-5 text-center"></i>基礎配置</a></li>
+            <li><a id="menu-system-status" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-server mr-3 w-5 text-center"></i>系統狀態</a></li>
+            <li><a id="menu-system-backup" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-database mr-3 w-5 text-center"></i>備份恢復</a></li>
+            <li><a id="menu-system-log" class="flex items-center px-6 py-2.5 hover:bg-primary/80 rounded transition"><i class="fa-solid fa-file-alt mr-3 w-5 text-center"></i>系統日誌</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <div class="p-4 text-xs text-gray-400 text-center border-t border-gray-700">© 2024 AI智能識別平台 v1.0.0</div>
+  </aside>
+  
+  <!-- 主內容區 -->
+  <main class="ml-64 pt-20 px-8 transition-all">
+    <!-- 仪表盘页面 -->
+    <div id="page-dashboard" class="page-section">
+      <!-- 数据概览卡片 -->
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center">
+            <i class="fa-solid fa-gauge-high mr-2 text-primary"></i>
+            <span>数据概览</span>
+          </h2>
+          <div>
+            <select id="dashboardTimeRange" class="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm text-sm">
+              <option value="today">今日</option>
+              <option value="yesterday">昨日</option>
+              <option value="week">本周</option>
+              <option value="month" selected>本月</option>
+              <option value="year">今年</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- 统计卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <!-- 总请求数 -->
+          <div class="p-6 flex flex-col bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-800 rounded-lg shadow">
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-gray-500 dark:text-gray-400 text-sm">总请求数</span>
+              <div class="bg-primary bg-opacity-10 p-2 rounded-full">
+                <i class="fa-solid fa-globe text-primary"></i>
+              </div>
+            </div>
+            <h3 class="text-3xl font-bold mb-2 text-gray-900 dark:text-white">8,942</h3>
+            <div class="text-success text-sm flex items-center">
+              <i class="fa-solid fa-arrow-up mr-1"></i>
+              <span>12.5% 同比上升</span>
+            </div>
+          </div>
+
+          <!-- 成功率 -->
+          <div class="p-6 flex flex-col bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-700 dark:to-gray-800 rounded-lg shadow">
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-gray-500 dark:text-gray-400 text-sm">成功率</span>
+              <div class="bg-success bg-opacity-10 p-2 rounded-full">
+                <i class="fa-solid fa-check text-success"></i>
+              </div>
+            </div>
+            <h3 class="text-3xl font-bold mb-2 text-gray-900 dark:text-white">98.7%</h3>
+            <div class="text-success text-sm flex items-center">
+              <i class="fa-solid fa-arrow-up mr-1"></i>
+              <span>0.9% 同比上升</span>
+            </div>
+          </div>
+
+          <!-- 平均响应时间 -->
+          <div class="p-6 flex flex-col bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-gray-700 dark:to-gray-800 rounded-lg shadow">
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-gray-500 dark:text-gray-400 text-sm">平均响应时间</span>
+              <div class="bg-warning bg-opacity-10 p-2 rounded-full">
+                <i class="fa-solid fa-clock text-warning"></i>
+              </div>
+            </div>
+            <h3 class="text-3xl font-bold mb-2 text-gray-900 dark:text-white">245ms</h3>
+            <div class="text-danger text-sm flex items-center">
+              <i class="fa-solid fa-arrow-up mr-1"></i>
+              <span>5.2% 同比上升</span>
+            </div>
+          </div>
+
+          <!-- 并发峰值 -->
+          <div class="p-6 flex flex-col bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-gray-700 dark:to-gray-800 rounded-lg shadow">
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-gray-500 dark:text-gray-400 text-sm">并发峰值</span>
+              <div class="bg-secondary bg-opacity-10 p-2 rounded-full">
+                <i class="fa-solid fa-bolt text-secondary"></i>
+              </div>
+            </div>
+            <h3 class="text-3xl font-bold mb-2 text-gray-900 dark:text-white">156</h3>
+            <div class="text-success text-sm flex items-center">
+              <i class="fa-solid fa-arrow-up mr-1"></i>
+              <span>21.8% 同比上升</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 图表区域 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- 请求趋势图 -->
+        <div class="card bg-white dark:bg-gray-800 p-6 shadow-card dark:shadow-card-dark">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">请求趋势</h3>
+            <div class="flex space-x-2 text-sm">
+              <button class="px-2 py-1 rounded bg-primary text-white">日</button>
+              <button class="px-2 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">周</button>
+              <button class="px-2 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">月</button>
+            </div>
+          </div>
+          <div class="h-64 w-full" id="requestTrendChart">
+            <div class="flex items-center justify-center h-full">
+              <div class="text-gray-500 dark:text-gray-400">加载图表中...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- API调用分布 -->
+        <div class="card bg-white dark:bg-gray-800 p-6 shadow-card dark:shadow-card-dark">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">API调用分布</h3>
+            <div>
+              <select class="px-2 py-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm text-sm">
+                <option>所有API</option>
+                <option>图像识别</option>
+                <option>语义分析</option>
+                <option>自然语言处理</option>
+              </select>
+            </div>
+          </div>
+          <div class="h-64 w-full" id="apiDistributionChart">
+            <div class="flex items-center justify-center h-full">
+              <div class="text-gray-500 dark:text-gray-400">加载图表中...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 最近活动和系统状态 -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- 最近活动 -->
+        <div class="card bg-white dark:bg-gray-800 p-6 shadow-card dark:shadow-card-dark lg:col-span-2">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">最近活动</h3>
+            <button class="text-primary text-sm">查看全部</button>
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-start">
+              <div class="bg-primary bg-opacity-10 p-2 rounded-full mr-3">
+                <i class="fa-solid fa-user text-primary"></i>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between">
+                  <p class="text-gray-800 dark:text-white">新用户注册</p>
+                  <span class="text-gray-500 dark:text-gray-400 text-xs">10分钟前</span>
+                </div>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">来自IP：192.168.1.105</p>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-danger bg-opacity-10 p-2 rounded-full mr-3">
+                <i class="fa-solid fa-triangle-exclamation text-danger"></i>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between">
+                  <p class="text-gray-800 dark:text-white">错误警报</p>
+                  <span class="text-gray-500 dark:text-gray-400 text-xs">35分钟前</span>
+                </div>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">图像识别API响应超时</p>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-warning bg-opacity-10 p-2 rounded-full mr-3">
+                <i class="fa-solid fa-key text-warning"></i>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between">
+                  <p class="text-gray-800 dark:text-white">密钥创建</p>
+                  <span class="text-gray-500 dark:text-gray-400 text-xs">1小时前</span>
+                </div>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">创建了新的API密钥：AI-TEST-KEY</p>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-success bg-opacity-10 p-2 rounded-full mr-3">
+                <i class="fa-solid fa-server text-success"></i>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between">
+                  <p class="text-gray-800 dark:text-white">系统更新</p>
+                  <span class="text-gray-500 dark:text-gray-400 text-xs">3小时前</span>
+                </div>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">系统版本更新至v2.3.0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 系统状态 -->
+        <div class="card bg-white dark:bg-gray-800 p-6 shadow-card dark:shadow-card-dark">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">系统状态</h3>
+            <button class="text-primary text-sm">刷新</button>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-sm text-gray-700 dark:text-gray-300">CPU</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">42%</span>
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div class="bg-primary rounded-full h-2" style="width: 42%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-sm text-gray-700 dark:text-gray-300">内存</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">68%</span>
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div class="bg-warning rounded-full h-2" style="width: 68%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-sm text-gray-700 dark:text-gray-300">磁盘</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">23%</span>
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div class="bg-success rounded-full h-2" style="width: 23%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-sm text-gray-700 dark:text-gray-300">网络</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">56%</span>
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div class="bg-primary rounded-full h-2" style="width: 56%"></div>
+              </div>
+            </div>
+            <div class="mt-6 border-t pt-4 dark:border-gray-700">
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-700 dark:text-gray-300">在线时间</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">14天8小时</span>
+              </div>
+              <div class="flex justify-between items-center mt-2">
+                <span class="text-sm text-gray-700 dark:text-gray-300">服务状态</span>
+                <span class="px-2 py-1 rounded text-xs bg-success text-white">正常</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- API管理页面 -->
+    <div id="page-api" class="page-section">
+      <!-- API密鑰管理卡片 -->
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center">
+            <i class="fa-solid fa-key mr-2 text-primary"></i>
+            <span>API密鑰管理</span>
+          </h2>
+          <div class="flex space-x-3">
+            <button id="addApiKey" class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition flex items-center">
+              <i class="fa fa-plus mr-2"></i>新增密鑰
+            </button>
+            <button id="exportApiKeys" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg transition flex items-center">
+              <i class="fa fa-download mr-2"></i>導出
+            </button>
+          </div>
+        </div>
+        
+        <div class="mb-6 flex flex-wrap items-center gap-3">
+          <div class="relative flex-1 min-w-[200px]">
+            <input type="text" id="searchApiInput" placeholder="搜索API密鑰..." class="w-full pl-10 pr-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          </div>
+          <select id="statusFilter" class="px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+            <option>全部狀態</option>
+            <option>已啟用</option>
+            <option>已禁用</option>
+          </select>
+          <button id="batchDeleteBtn" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg transition flex items-center">
+            <i class="fa fa-trash mr-2"></i>批量刪除
+          </button>
+        </div>
+        
+        <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th class="w-10 px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <input type="checkbox" id="selectAllApis" class="rounded border-gray-300 text-primary focus:ring-primary">
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">名稱</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">密鑰</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">狀態</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">創建時間</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">操作</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <tr class="table-row-hover table-row-odd">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <input type="checkbox" class="api-checkbox rounded border-gray-300 text-primary focus:ring-primary" data-index="0">
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">AIORNOT</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <div class="flex items-center">
+                    <span class="mr-2">sk-xxxxxx</span>
+                    <button class="text-gray-400 hover:text-primary" title="複製">
+                      <i class="fa-regular fa-copy text-sm"></i>
+                    </button>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="badge badge-success">已啟用</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">2024-05-12</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm space-x-3">
+                  <button class="text-primary hover:text-primary-600" title="編輯">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </button>
+                  <button class="text-danger-500 hover:text-danger-600" title="刪除">
+                    <i class="fa-regular fa-trash-can"></i>
+                  </button>
+                  <button class="text-warning-500 hover:text-warning-600" title="禁用">
+                    <i class="fa-regular fa-eye-slash"></i>
+                  </button>
+                </td>
+              </tr>
+              <!-- 更多示例數據 -->
+              <tr class="table-row-hover table-row-even">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <input type="checkbox" class="api-checkbox rounded border-gray-300 text-primary focus:ring-primary" data-index="1">
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">OCR識別</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <div class="flex items-center">
+                    <span class="mr-2">sk-yyyyyy</span>
+                    <button class="text-gray-400 hover:text-primary" title="複製">
+                      <i class="fa-regular fa-copy text-sm"></i>
+                    </button>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="badge badge-warning">已禁用</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">2024-05-10</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm space-x-3">
+                  <button class="text-primary hover:text-primary-600" title="編輯">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </button>
+                  <button class="text-danger-500 hover:text-danger-600" title="刪除">
+                    <i class="fa-regular fa-trash-can"></i>
+                  </button>
+                  <button class="text-success-500 hover:text-success-600" title="啟用">
+                    <i class="fa-regular fa-eye"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row justify-between items-center mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div class="text-sm text-gray-500 dark:text-gray-400 mb-3 sm:mb-0">
+            顯示 <span class="font-medium">1</span> 到 <span class="font-medium">${apiList.length}</span> 筆，共 <span class="font-medium">${apiList.length}</span> 筆資料
+          </div>
+          <div class="flex space-x-1">
+            <button class="px-3 py-1 border rounded-lg text-gray-500 hover:border-primary hover:text-primary disabled:opacity-50" disabled>
+              <i class="fa-solid fa-chevron-left mr-1"></i>上一頁
+            </button>
+            <button class="px-3 py-1 border rounded-lg bg-primary text-white">1</button>
+            ${apiList.length > 1 ? `<button class="px-3 py-1 border rounded-lg text-gray-500 hover:border-primary hover:text-primary">2</button>` : ''}
+            ${apiList.length > 1 ? `<button class="px-3 py-1 border rounded-lg text-gray-500 hover:border-primary hover:text-primary">
+              下一頁<i class="fa-solid fa-chevron-right ml-1"></i>
+            </button>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 接口配置页面 -->
+    <div id="page-api-config" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center">
+            <i class="fa-solid fa-cogs mr-2 text-primary"></i>
+            <span>接口配置</span>
+          </h2>
+          <button class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition flex items-center" id="addApiConfig">
+            <i class="fa fa-plus mr-2"></i>新增接口
+          </button>
+        </div>
+        <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">接口名称</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">服务类型</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">接口地址</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">状态</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">操作</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700" id="apiConfigTable">
+              <!-- API配置列表将通过JavaScript动态生成 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 访问控制页面 -->
+    <div id="page-api-access" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center">
+            <i class="fa-solid fa-user-shield mr-2 text-primary"></i>
+            <span>IP白名单管理</span>
+          </h2>
+          <button class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition flex items-center" id="addIpWhitelist">
+            <i class="fa fa-plus mr-2"></i>添加IP
+          </button>
+        </div>
+        <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 mb-8">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">IP地址</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">描述</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">添加时间</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">操作</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700" id="ipWhitelistTable">
+              <!-- IP白名单列表将通过JavaScript动态生成 -->
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- 添加IP黑名单管理 -->
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center">
+            <i class="fa-solid fa-ban mr-2 text-danger"></i>
+            <span>IP黑名单管理</span>
+          </h2>
+          <button class="bg-danger hover:bg-danger-600 text-white px-4 py-2 rounded-lg transition flex items-center" id="addIpBlacklist">
+            <i class="fa fa-plus mr-2"></i>添加封禁IP
+          </button>
+        </div>
+        <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 mb-8">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">IP地址</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">封禁原因</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">封禁时间</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">到期时间</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">操作</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700" id="ipBlacklistTable">
+              <!-- IP黑名单列表将通过JavaScript动态生成 -->
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center">
+            <i class="fa-solid fa-tachometer-alt mr-2 text-primary"></i>
+            <span>访问频率限制</span>
+          </h2>
+          <button class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition flex items-center" id="saveRateLimit">
+            <i class="fa fa-save mr-2"></i>保存设置
+          </button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <h3 class="font-medium mb-4">每分钟请求数限制</h3>
+            <div class="flex items-center">
+              <input type="number" id="requestsPerMinute" min="1" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50" value="60">
+            </div>
+          </div>
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <h3 class="font-medium mb-4">每日请求数限制</h3>
+            <div class="flex items-center">
+              <input type="number" id="requestsPerDay" min="1" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50" value="10000">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 版本管理页面 -->
+    <div id="page-api-version" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center">
+            <i class="fa-solid fa-code-branch mr-2 text-primary"></i>
+            <span>版本管理</span>
+          </h2>
+          <button class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition flex items-center" id="checkUpdate">
+            <i class="fa fa-sync-alt mr-2"></i>检查更新
+          </button>
+        </div>
+        <div class="space-y-4">
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-medium">当前版本</h3>
+              <span class="badge badge-success" id="currentVersion">v1.0.0</span>
+            </div>
+            <p class="text-sm text-gray-500" id="lastUpdateTime">最后更新：2024-03-15</p>
+          </div>
+          
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <h3 class="font-medium mb-2">Git仓库信息</h3>
+            <div class="text-sm text-gray-500 space-y-2">
+              <div class="flex items-center justify-between">
+                <span>仓库地址：</span>
+                <a href="https://github.com/homanho1234568/Harkerthon-AIpicturecheck.git" target="_blank" class="text-primary hover:underline truncate max-w-md">https://github.com/homanho1234568/Harkerthon-AIpicturecheck.git</a>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>分支：</span>
+                <span id="currentBranch">main</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>最新提交：</span>
+                <span id="latestCommit">获取中...</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg" id="updateStatusCard">
+            <h3 class="font-medium mb-2">更新状态</h3>
+            <div class="flex items-center space-x-4">
+              <span class="text-sm text-gray-500" id="updateStatus">未检查更新</span>
+              <button class="bg-primary hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition flex items-center hidden" id="doUpdate">
+                <i class="fa fa-download mr-2"></i>更新系统
+              </button>
+            </div>
+            <div class="mt-4 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden hidden" id="updateProgressContainer">
+              <div class="bg-primary h-2 rounded-full" id="updateProgress" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <h3 class="font-medium mb-2">更新日志</h3>
+            <div class="max-h-60 overflow-y-auto">
+              <ul class="text-sm text-gray-500 space-y-2" id="updateLogs">
+                <li>• v1.0.0 (2024-03-15): 初始版本</li>
+                <li>• 新增API密钥管理功能</li>
+                <li>• 优化用户界面</li>
+                <li>• 修复已知问题</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 数据概览页面 -->
+    <div id="page-stat" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">数据概览</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <h3 class="text-lg font-medium mb-2">总调用次数</h3>
+            <p class="text-3xl font-bold text-primary">1,234</p>
+          </div>
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <h3 class="text-lg font-medium mb-2">今日调用</h3>
+            <p class="text-3xl font-bold text-primary">123</p>
+          </div>
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <h3 class="text-lg font-medium mb-2">成功率</h3>
+            <p class="text-3xl font-bold text-primary">99.9%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 其他页面内容 -->
+    <div id="page-stat-call" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">調用統計</h2>
+        <div class="text-gray-500 dark:text-gray-300">這裡展示API調用次數、趨勢圖等統計數據。</div>
+      </div>
+    </div>
+    <div id="page-stat-perf" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">性能監控</h2>
+        <div class="text-gray-500 dark:text-gray-300">這裡展示API響應時間、系統負載等性能指標。</div>
+      </div>
+    </div>
+    <div id="page-stat-error" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">錯誤日誌</h2>
+        <div class="text-gray-500 dark:text-gray-300">這裡展示API錯誤日誌與異常記錄。</div>
+      </div>
+    </div>
+    <div id="page-user" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">用戶列表</h2>
+        <div class="text-gray-500 dark:text-gray-300">這裡展示所有用戶的基本信息。</div>
+      </div>
+    </div>
+    <div id="page-user-role" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">角色權限</h2>
+        <div class="text-gray-500 dark:text-gray-300">這裡配置用戶角色與權限。</div>
+      </div>
+    </div>
+    <div id="page-user-log" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">操作日誌</h2>
+        <div class="text-gray-500 dark:text-gray-300">這裡記錄用戶操作日誌。</div>
+      </div>
+    </div>
+    <div id="page-user-black" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">黑名單管理</h2>
+        <div class="text-gray-500 dark:text-gray-300">這裡管理被封禁的用戶或IP。</div>
+      </div>
+    </div>
+    <div id="page-system" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">基礎配置</h2>
+        <div class="text-gray-500 dark:text-gray-300">這裡設置系統的基礎參數。</div>
+      </div>
+    </div>
+    <div id="page-system-status" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">系統狀態</h2>
+        <div class="text-gray-500 dark:text-gray-300">這裡展示系統運行狀態與健康檢查。</div>
+      </div>
+    </div>
+    <div id="page-system-backup" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">備份恢復</h2>
+        <div class="text-gray-500 dark:text-gray-300">這裡進行數據備份與恢復操作。</div>
+      </div>
+    </div>
+    <div id="page-system-log" class="page-section hidden">
+      <div class="card bg-white dark:bg-gray-800 p-6 mb-8 shadow-card dark:shadow-card-dark">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">系統日誌</h2>
+        <div class="text-gray-500 dark:text-gray-300">這裡查看系統運行日誌。</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 添加通知模态框 -->
+  <div id="notificationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-96">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-medium">系统通知</h3>
+        <button onclick="closeNotification()" class="text-gray-500 hover:text-gray-700">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      <div class="space-y-4">
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 text-primary">
+            <i class="fa-solid fa-info-circle text-xl"></i>
+          </div>
+          <div>
+            <p class="font-medium">系统更新</p>
+            <p class="text-sm text-gray-500">系统已更新至最新版本v1.0.0</p>
+            <p class="text-xs text-gray-400">今天 10:30</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 text-warning-500">
+            <i class="fa-solid fa-exclamation-triangle text-xl"></i>
+          </div>
+          <div>
+            <p class="font-medium">调用限制提醒</p>
+            <p class="text-sm text-gray-500">您的API调用次数已达到85%，请考虑升级</p>
+            <p class="text-xs text-gray-400">昨天 15:45</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-4">
+          <div class="flex-shrink-0 text-success-500">
+            <i class="fa-solid fa-check-circle text-xl"></i>
+          </div>
+          <div>
+            <p class="font-medium">备份完成</p>
+            <p class="text-sm text-gray-500">系统数据已自动备份完成</p>
+            <p class="text-xs text-gray-400">3天前</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end mt-6">
+        <button onclick="closeNotification()" class="px-4 py-2 bg-gray-200 dark:bg-gray-600 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 预先初始化接口配置列表
+    let apiConfigList = JSON.parse(localStorage.getItem('apiConfigList') || '[]');
+    
+    // 初始化默认接口配置，如果列表为空
+    if (apiConfigList.length === 0) {
+      apiConfigList = [
+        {
+          name: 'AIORNOT API',
+          type: 'REST API',
+          url: 'https://api.aiornot.com/v1/detect',
+          status: 'active',
+          jsCode: `async function detect(file) {
+  // 模拟AIORNOT API调用
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const aiProbability = Math.random() * 100;
+      resolve({ 
+        probability: aiProbability,
+        source: 'AIORNOT API'
+      });
+    }, 800);
+  });
+}`,
+          createdAt: new Date().toISOString()
+        },
+        {
+          name: 'Google Vision API',
+          type: 'REST API',
+          url: 'https://vision.googleapis.com/v1/images:annotate',
+          status: 'active',
+          jsCode: `async function detect(file) {
+  // 模拟Google Vision API调用
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const aiProbability = Math.random() * 100;
+      resolve({ 
+        probability: aiProbability,
+        source: 'Google Vision API'
+      });
+    }, 1000);
+  });
+}`,
+          createdAt: new Date().toISOString()
+        }
+      ];
+      localStorage.setItem('apiConfigList', JSON.stringify(apiConfigList));
+    }
+
+    // 主題切換
+    document.getElementById('themeToggle').onclick = function() {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+    };
+    
+    // 初始化主題
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark');
+    }
+    
+    // 登出功能
+    document.getElementById('logoutBtn').onclick = function(e) {
+      e.preventDefault();
+      if (confirm('確定要登出系統嗎？')) {
+        localStorage.removeItem('isLoggedIn');
+        window.location.href = 'login.html';
+      }
+    };
+    
+    // 側邊欄菜單映射
+    const menuMap = {
+      'menu-api': 'page-api',
+      'menu-api-config': 'page-api-config',
+      'menu-api-access': 'page-api-access',
+      'menu-api-version': 'page-api-version',
+      'menu-stat': 'page-stat',
+      'menu-stat-call': 'page-stat-call',
+      'menu-stat-perf': 'page-stat-perf',
+      'menu-stat-error': 'page-stat-error',
+      'menu-user': 'page-user',
+      'menu-user-role': 'page-user-role',
+      'menu-user-log': 'page-user-log',
+      'menu-user-black': 'page-user-black',
+      'menu-system': 'page-system',
+      'menu-system-status': 'page-system-status',
+      'menu-system-backup': 'page-system-backup',
+      'menu-system-log': 'page-system-log'
+    };
+
+    // 初始化頁面顯示
+    document.addEventListener('DOMContentLoaded', function() {
+      // 默认显示API管理页面
+      const defaultPage = document.getElementById('menu-api');
+      if (defaultPage) {
+        defaultPage.classList.add('active-menu');
+        const pageId = 'page-api';
+        const page = document.getElementById(pageId);
+        if (page) page.classList.remove('hidden');
+      }
+
+      // 为所有菜单项添加点击事件
+      Object.keys(menuMap).forEach(menuId => {
+        const el = document.getElementById(menuId);
+        if (!el) return;
+        el.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // 移除所有菜单项的active状态
+          document.querySelectorAll('.sidebar-scroll a').forEach(link => {
+            link.classList.remove('active-menu');
+          });
+          
+          // 添加当前菜单项的active状态
+          this.classList.add('active-menu');
+          
+          // 隐藏所有页面
+          document.querySelectorAll('.page-section').forEach(sec => {
+            sec.classList.add('hidden');
+          });
+          
+          // 显示对应页面
+          const pageId = menuMap[menuId];
+          const page = document.getElementById(pageId);
+          if (page) {
+            page.classList.remove('hidden');
+          }
+        });
+      });
+    });
+
+    // API密鑰管理功能
+    let apiList = JSON.parse(localStorage.getItem('apiList') || '[]');
+
+    // 新增密鑰按鈕
+    document.getElementById('addApiKey').addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // 获取接口配置列表
+      const apiServices = apiConfigList.filter(config => config.status === 'active');
+      let serviceOptions = `
+        <option value="AIORNOT API">AIORNOT API</option>
+        <option value="Google Vision API">Google Vision API</option>
+      `;
+      
+      // 添加接口配置中的接口
+      apiServices.forEach(service => {
+        serviceOptions += `<option value="${service.name}">${service.name}</option>`;
+      });
+      
+      // 创建模态框
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+      modal.innerHTML = `
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-96">
+          <h3 class="text-lg font-medium mb-4">新增API密鑰</h3>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">API名稱</label>
+            <input type="text" id="apiName" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">API URL</label>
+            <input type="text" id="apiUrl" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">API KEY</label>
+            <input type="text" id="apiKey" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">服務</label>
+            <select id="apiService" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+              ${serviceOptions}
+            </select>
+          </div>
+          <div class="flex justify-end space-x-3">
+            <button class="px-4 py-2 text-gray-600 hover:text-gray-800" onclick="this.closest('.fixed').remove()">取消</button>
+            <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600" id="confirmAdd">確認</button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      // 处理确认按钮点击
+      document.getElementById('confirmAdd').addEventListener('click', function() {
+        const name = document.getElementById('apiName').value.trim();
+        const url = document.getElementById('apiUrl').value.trim();
+        const key = document.getElementById('apiKey').value.trim();
+        const service = document.getElementById('apiService').value;
+        if (!name) {
+          alert('請輸入API名稱');
+          return;
+        }
+        if (!url) {
+          alert('請輸入API URL');
+          return;
+        }
+        if (!key) {
+          alert('請輸入API KEY');
+          return;
+        }
+        if (!service) {
+          alert('請選擇API服務');
+          return;
+        }
+        
+        // 添加新的API密钥（不进行实际API调用）
+        apiList.push({
+          name,
+          key,
+          url,
+          service,
+          status: 'enabled',
+          created: new Date().toLocaleDateString()
+        });
+        localStorage.setItem('apiList', JSON.stringify(apiList));
+        renderApiTable();
+        modal.remove();
+      });
+    });
+
+    // 導出按鈕
+    document.getElementById('exportApiKeys').onclick = function() {
+      const csv = [
+        ['名稱', '密鑰', '狀態', '創建時間'],
+        ...apiList.map(api => [api.name, api.key, api.status === 'enabled' ? '已啟用' : '已禁用', api.created])
+      ].map(row => row.join(',')).join('\n');
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'api_keys.csv';
+      link.click();
+    };
+
+    // 全选功能
+    document.getElementById('selectAllApis').addEventListener('change', function() {
+      const isChecked = this.checked;
+      document.querySelectorAll('.api-checkbox').forEach(checkbox => {
+        checkbox.checked = isChecked;
+      });
+    });
+    
+    // 单个复选框改变状态时更新全选框
+    document.addEventListener('change', function(e) {
+      if (e.target.classList.contains('api-checkbox')) {
+        updateSelectAllCheckbox();
+      }
+    });
+    
+    // 更新全选复选框状态
+    function updateSelectAllCheckbox() {
+      const checkboxes = document.querySelectorAll('.api-checkbox');
+      const selectAllCheckbox = document.getElementById('selectAllApis');
+      if (checkboxes.length === 0) {
+        selectAllCheckbox.checked = false;
+        return;
+      }
+      
+      const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+      const someChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+      
+      selectAllCheckbox.checked = allChecked;
+      selectAllCheckbox.indeterminate = someChecked && !allChecked;
+    }
+    
+    // 批量删除按钮
+    document.getElementById('batchDeleteBtn').onclick = function() {
+      const selected = document.querySelectorAll('.api-checkbox:checked');
+      if (selected.length === 0) {
+        alert('請先選擇要刪除的項目');
+        return;
+      }
+      if (confirm(`確定要刪除選中的 ${selected.length} 個項目嗎？`)) {
+        const indexes = Array.from(selected).map(cb => parseInt(cb.dataset.index));
+        apiList = apiList.filter((_, i) => !indexes.includes(i));
+        localStorage.setItem('apiList', JSON.stringify(apiList));
+        renderApiTable();
+      }
+    };
+
+    // 搜索功能
+    document.getElementById('searchApiInput').oninput = function(e) {
+      const searchText = e.target.value.toLowerCase();
+      const rows = document.querySelectorAll('tbody tr');
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchText) ? '' : 'none';
+      });
+    };
+
+    // 狀態篩選
+    document.getElementById('statusFilter').onchange = function(e) {
+      const status = e.target.value;
+      const rows = document.querySelectorAll('tbody tr');
+      rows.forEach(row => {
+        const rowStatus = row.querySelector('.badge').textContent;
+        row.style.display = status === '全部狀態' || rowStatus === status ? '' : 'none';
+      });
+    };
+
+    // 複製密鑰功能
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('button[title="複製"]')) {
+        const key = e.target.closest('tr').querySelector('td:nth-child(2) span').textContent;
+        navigator.clipboard.writeText(key).then(() => {
+          alert('密鑰已複製到剪貼板');
+        });
+      }
+    });
+
+    // 編輯功能
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('button[title="編輯"]')) {
+        const row = e.target.closest('tr');
+        const index = parseInt(row.dataset.index);
+        const api = apiList[index];
+        
+        // 获取接口配置列表
+        const apiServices = apiConfigList.filter(config => config.status === 'active');
+        let serviceOptions = `
+          <option value="AIORNOT API" ${api.service === 'AIORNOT API' ? 'selected' : ''}>AIORNOT API</option>
+          <option value="Google Vision API" ${api.service === 'Google Vision API' ? 'selected' : ''}>Google Vision API</option>
+        `;
+        
+        // 添加接口配置中的接口
+        apiServices.forEach(service => {
+          serviceOptions += `<option value="${service.name}" ${api.service === service.name ? 'selected' : ''}>${service.name}</option>`;
+        });
+        
+        // 创建编辑模态框
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        modal.innerHTML = `
+          <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-96">
+            <h3 class="text-lg font-medium mb-4">编辑API密钥</h3>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">API名称</label>
+              <input type="text" id="editApiName" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50" value="${api.name}">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">API URL</label>
+              <input type="text" id="editApiUrl" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50" value="${api.url || ''}">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">API KEY</label>
+              <input type="text" id="editApiKey" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50" value="${api.key}">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">服务</label>
+              <select id="editApiService" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+                ${serviceOptions}
+              </select>
+            </div>
+            <div class="flex justify-end space-x-3">
+              <button class="px-4 py-2 text-gray-600 hover:text-gray-800" onclick="this.closest('.fixed').remove()">取消</button>
+              <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600" id="confirmEdit" data-index="${index}">保存</button>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // 处理确认按钮点击
+        document.getElementById('confirmEdit').addEventListener('click', function() {
+          const index = parseInt(this.dataset.index);
+          const name = document.getElementById('editApiName').value.trim();
+          const url = document.getElementById('editApiUrl').value.trim();
+          const key = document.getElementById('editApiKey').value.trim();
+          const service = document.getElementById('editApiService').value;
+          
+          if (!name) {
+            alert('请输入API名称');
+            return;
+          }
+          if (!url) {
+            alert('请输入API URL');
+            return;
+          }
+          if (!key) {
+            alert('请输入API KEY');
+            return;
+          }
+          
+          // 更新API信息
+          apiList[index] = {
+            ...apiList[index],
+            name,
+            key,
+            url,
+            service
+          };
+          localStorage.setItem('apiList', JSON.stringify(apiList));
+          renderApiTable();
+          modal.remove();
+        });
+      }
+    });
+
+    // 刪除功能
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('button[title="刪除"]')) {
+        const row = e.target.closest('tr');
+        const index = parseInt(row.dataset.index);
+        if (confirm('確定要刪除這個API密鑰嗎？')) {
+          apiList.splice(index, 1);
+          localStorage.setItem('apiList', JSON.stringify(apiList));
+          renderApiTable();
+        }
+      }
+    });
+
+    // 啟用/禁用功能
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('button[title="啟用"], button[title="禁用"]')) {
+        const row = e.target.closest('tr');
+        const index = parseInt(row.dataset.index);
+        const api = apiList[index];
+        api.status = api.status === 'enabled' ? 'disabled' : 'enabled';
+        localStorage.setItem('apiList', JSON.stringify(apiList));
+        renderApiTable();
+      }
+    });
+
+    // 渲染API表格
+    function renderApiTable(page = 1) {
+      const tbody = document.querySelector('tbody');
+      const pageSize = 10;
+      const total = apiList.length;
+      const totalPages = Math.ceil(total / pageSize);
+      const start = (page - 1) * pageSize;
+      const end = Math.min(start + pageSize, total);
+      let html = '';
+      apiList.slice(start, end).forEach((api, index) => {
+        html += `
+          <tr class="table-row-hover ${(start+index) % 2 === 0 ? 'table-row-odd' : 'table-row-even'}" data-index="${start+index}">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <input type="checkbox" class="api-checkbox rounded border-gray-300 text-primary focus:ring-primary" data-index="${start+index}">
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">${api.name}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+              <div class="flex items-center">
+                <span class="mr-2">${api.key}</span>
+                <button class="text-gray-400 hover:text-primary" title="複製">
+                  <i class="fa-regular fa-copy text-sm"></i>
+                </button>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="badge ${api.status === 'enabled' ? 'badge-success' : 'badge-warning'}">
+                ${api.status === 'enabled' ? '已啟用' : '已禁用'}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${api.created}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-3">
+              <button class="text-primary hover:text-primary-600" title="編輯">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+              <button class="text-danger-500 hover:text-danger-600" title="刪除">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+              <button class="text-warning-500 hover:text-warning-600" title="禁用">
+                <i class="fa-regular fa-eye-slash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+
+      // 更新选择全部checkbox状态
+      updateSelectAllCheckbox();
+
+      // 更新分頁區域
+      const paginationDiv = document.querySelector('.flex.flex.sm\\:flex-row.justify-between.items-center.mt-6');
+      if (paginationDiv) {
+        let pageHtml = `
+          <div class="text-sm text-gray-500 dark:text-gray-400 mb-3 sm:mb-0">
+            顯示 <span class="font-medium">${total === 0 ? 0 : start+1}</span> 到 <span class="font-medium">${end}</span> 筆，共 <span class="font-medium">${total}</span> 筆資料
+          </div>`;
+        
+        // 只有當總頁數超過1頁時才顯示分頁按鈕
+        if (totalPages > 1) {
+          pageHtml += `<div class="flex space-x-1">
+            <button class="px-3 py-1 border rounded-lg text-gray-500 hover:border-primary hover:text-primary ${page === 1 ? 'disabled opacity-50' : ''}" 
+                    ${page === 1 ? 'disabled' : ''} data-page="${page-1}">
+              <i class="fa-solid fa-chevron-left mr-1"></i>上一頁
+            </button>`;
+            
+          for (let i = 1; i <= totalPages; i++) {
+            pageHtml += `<button class="px-3 py-1 border rounded-lg ${i === page ? 'bg-primary text-white' : 'text-gray-500 hover:border-primary hover:text-primary'}" 
+                                data-page="${i}">${i}</button>`;
+          }
+            
+          pageHtml += `<button class="px-3 py-1 border rounded-lg text-gray-500 hover:border-primary hover:text-primary ${page === totalPages ? 'disabled opacity-50' : ''}" 
+                              ${page === totalPages ? 'disabled' : ''} data-page="${page+1}">
+              下一頁<i class="fa-solid fa-chevron-right ml-1"></i>
+            </button>
+          </div>`;
+        } else {
+          pageHtml += `<div></div>`; // 如果只有一頁，則不顯示分頁按鈕
+        }
+        
+        paginationDiv.innerHTML = pageHtml;
+        
+        // 為分頁按鈕添加事件監聽器
+        paginationDiv.querySelectorAll('button[data-page]').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const newPage = parseInt(this.dataset.page);
+            if (!isNaN(newPage) && newPage > 0 && newPage <= totalPages) {
+              renderApiTable(newPage);
+            }
+          });
+        });
+      }
+    }
+
+    // 初始化渲染
+    renderApiTable();
+
+    // 通知功能
+    document.getElementById('notificationBtn').onclick = function() {
+      document.getElementById('notificationModal').classList.remove('hidden');
+    };
+
+    function closeNotification() {
+      document.getElementById('notificationModal').classList.add('hidden');
+    }
+
+    // 点击模态框外部关闭
+    document.getElementById('notificationModal').onclick = function(e) {
+      if (e.target === this) {
+        closeNotification();
+      }
+    };
+
+    // 接口配置功能
+    // 删除此处的接口配置列表初始化，因为已经在前面初始化过了
+    /*
+    let apiConfigList = JSON.parse(localStorage.getItem('apiConfigList') || '[]');
+    
+    // 初始化默认接口配置，如果列表为空
+    if (apiConfigList.length === 0) {
+      apiConfigList = [
+        // ...接口配置...
+      ];
+      localStorage.setItem('apiConfigList', JSON.stringify(apiConfigList));
+    }
+    */
+    
+    // 初始化接口配置列表
+    function renderApiConfigTable() {
+      const tbody = document.getElementById('apiConfigTable');
+      if (!tbody) return;
+      
+      let html = '';
+      apiConfigList.forEach((config, index) => {
+        // 获取JS代码的前30个字符作为预览
+        const jsPreview = config.jsCode ? config.jsCode.substring(0, 30) + '...' : '无JS代码';
+        
+        html += `
+          <tr class="table-row-hover ${index % 2 === 0 ? 'table-row-odd' : 'table-row-even'}" data-index="${index}">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">${config.name}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${config.type}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${config.url}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="badge ${config.status === 'active' ? 'badge-success' : 'badge-warning'}">
+                ${config.status === 'active' ? '已启用' : '已禁用'}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-3">
+              <button class="text-primary hover:text-primary-600 edit-config" title="编辑">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+              <button class="text-danger-500 hover:text-danger-600 delete-config" title="删除">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+              <button class="${config.status === 'active' ? 'text-warning-500 hover:text-warning-600' : 'text-success-500 hover:text-success-600'} toggle-config" 
+                      title="${config.status === 'active' ? '禁用' : '启用'}">
+                <i class="fa-regular fa-${config.status === 'active' ? 'eye-slash' : 'eye'}"></i>
+              </button>
+              <button class="text-primary hover:text-primary-600 view-code" title="查看代码" data-index="${index}">
+                <i class="fa-solid fa-code"></i>
+              </button>
+              <button class="text-primary hover:text-primary-600 test-config" title="测试">
+                <i class="fa-solid fa-vial"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      
+      if (apiConfigList.length === 0) {
+        html = `
+          <tr>
+            <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+              暂无接口配置，请点击"新增接口"按钮添加
+            </td>
+          </tr>
+        `;
+      }
+      
+      tbody.innerHTML = html;
+    }
+    
+    // 添加接口配置
+    document.getElementById('addApiConfig')?.addEventListener('click', function() {
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+      modal.innerHTML = `
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-96">
+          <h3 class="text-lg font-medium mb-4">新增接口配置</h3>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">接口名称</label>
+            <input type="text" id="configName" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">服务类型</label>
+            <select id="configType" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+              <option value="REST API">REST API</option>
+              <option value="GraphQL">GraphQL</option>
+              <option value="SOAP">SOAP</option>
+              <option value="WebSocket">WebSocket</option>
+            </select>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">接口地址</label>
+            <input type="text" id="configUrl" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">状态</label>
+            <select id="configStatus" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+              <option value="active">启用</option>
+              <option value="inactive">禁用</option>
+            </select>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">JS调用代码</label>
+            <textarea id="configJsCode" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 h-32 font-mono text-sm" placeholder="async function detect(file) {
+  // 您的代码
+  return { probability: 85 };
+}"></textarea>
+          </div>
+          <div class="flex justify-end space-x-3">
+            <button class="px-4 py-2 text-gray-600 hover:text-gray-800" onclick="this.closest('.fixed').remove()">取消</button>
+            <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600" id="confirmAddConfig">确认</button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      document.getElementById('confirmAddConfig').addEventListener('click', function() {
+        const name = document.getElementById('configName').value.trim();
+        const type = document.getElementById('configType').value;
+        const url = document.getElementById('configUrl').value.trim();
+        const status = document.getElementById('configStatus').value;
+        const jsCode = document.getElementById('configJsCode').value.trim();
+        
+        if (!name) {
+          alert('请输入接口名称');
+          return;
+        }
+        if (!url) {
+          alert('请输入接口地址');
+          return;
+        }
+        
+        apiConfigList.push({
+          name,
+          type,
+          url,
+          status,
+          jsCode,
+          createdAt: new Date().toISOString()
+        });
+        
+        localStorage.setItem('apiConfigList', JSON.stringify(apiConfigList));
+        renderApiConfigTable();
+        modal.remove();
+      });
+    });
+    
+    // 编辑接口配置
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.edit-config')) {
+        const row = e.target.closest('tr');
+        const index = parseInt(row.dataset.index);
+        const config = apiConfigList[index];
+        
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        modal.innerHTML = `
+          <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-96">
+            <h3 class="text-lg font-medium mb-4">编辑接口配置</h3>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">接口名称</label>
+              <input type="text" id="editConfigName" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50" value="${config.name}">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">服务类型</label>
+              <select id="editConfigType" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+                <option value="REST API" ${config.type === 'REST API' ? 'selected' : ''}>REST API</option>
+                <option value="GraphQL" ${config.type === 'GraphQL' ? 'selected' : ''}>GraphQL</option>
+                <option value="SOAP" ${config.type === 'SOAP' ? 'selected' : ''}>SOAP</option>
+                <option value="WebSocket" ${config.type === 'WebSocket' ? 'selected' : ''}>WebSocket</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">接口地址</label>
+              <input type="text" id="editConfigUrl" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50" value="${config.url}">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">状态</label>
+              <select id="editConfigStatus" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+                <option value="active" ${config.status === 'active' ? 'selected' : ''}>启用</option>
+                <option value="inactive" ${config.status === 'inactive' ? 'selected' : ''}>禁用</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">JS调用代码</label>
+              <textarea id="editConfigJsCode" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 h-32 font-mono text-sm">${config.jsCode || ''}</textarea>
+            </div>
+            <div class="flex justify-end space-x-3">
+              <button class="px-4 py-2 text-gray-600 hover:text-gray-800" onclick="this.closest('.fixed').remove()">取消</button>
+              <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600" id="confirmEditConfig" data-index="${index}">保存</button>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        document.getElementById('confirmEditConfig').addEventListener('click', function() {
+          const index = parseInt(this.dataset.index);
+          const name = document.getElementById('editConfigName').value.trim();
+          const type = document.getElementById('editConfigType').value;
+          const url = document.getElementById('editConfigUrl').value.trim();
+          const status = document.getElementById('editConfigStatus').value;
+          const jsCode = document.getElementById('editConfigJsCode').value.trim();
+          
+          if (!name) {
+            alert('请输入接口名称');
+            return;
+          }
+          if (!url) {
+            alert('请输入接口地址');
+            return;
+          }
+          
+          apiConfigList[index] = {
+            ...apiConfigList[index],
+            name,
+            type,
+            url,
+            status,
+            jsCode,
+            updatedAt: new Date().toISOString()
+          };
+          
+          localStorage.setItem('apiConfigList', JSON.stringify(apiConfigList));
+          renderApiConfigTable();
+          modal.remove();
+        });
+      }
+    });
+    
+    // 删除接口配置
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.delete-config')) {
+        const row = e.target.closest('tr');
+        const index = parseInt(row.dataset.index);
+        
+        if (confirm('确定要删除这个接口配置吗？')) {
+          apiConfigList.splice(index, 1);
+          localStorage.setItem('apiConfigList', JSON.stringify(apiConfigList));
+          renderApiConfigTable();
+        }
+      }
+    });
+    
+    // 启用/禁用接口配置
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.toggle-config')) {
+        const row = e.target.closest('tr');
+        const index = parseInt(row.dataset.index);
+        
+        apiConfigList[index].status = apiConfigList[index].status === 'active' ? 'inactive' : 'active';
+        localStorage.setItem('apiConfigList', JSON.stringify(apiConfigList));
+        renderApiConfigTable();
+      }
+    });
+    
+    // 测试接口配置
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.test-config')) {
+        const row = e.target.closest('tr');
+        const index = parseInt(row.dataset.index);
+        const config = apiConfigList[index];
+        
+        alert(`正在测试接口 ${config.name} (${config.url})...\n测试成功！响应时间: 178ms`);
+      }
+    });
+    
+    // IP白名单功能
+    let ipWhitelist = JSON.parse(localStorage.getItem('ipWhitelist') || '[]');
+    
+    // 初始化IP白名单列表
+    function renderIpWhitelistTable() {
+      const tbody = document.getElementById('ipWhitelistTable');
+      if (!tbody) return;
+      
+      let html = '';
+      ipWhitelist.forEach((ip, index) => {
+        html += `
+          <tr class="table-row-hover ${index % 2 === 0 ? 'table-row-odd' : 'table-row-even'}" data-index="${index}">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">${ip.address}</td>
+            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">${ip.description}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${ip.createdAt}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-3">
+              <button class="text-primary hover:text-primary-600 edit-ip" title="编辑">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+              <button class="text-danger-500 hover:text-danger-600 delete-ip" title="删除">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      
+      if (ipWhitelist.length === 0) {
+        html = `
+          <tr>
+            <td colspan="4" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+              暂无IP白名单记录，请点击"添加IP"按钮添加
+            </td>
+          </tr>
+        `;
+      }
+      
+      tbody.innerHTML = html;
+    }
+    
+    // 添加IP白名单
+    document.getElementById('addIpWhitelist')?.addEventListener('click', function() {
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+      modal.innerHTML = `
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-96">
+          <h3 class="text-lg font-medium mb-4">添加IP白名单</h3>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">IP地址</label>
+            <input type="text" id="ipAddress" placeholder="例如: 192.168.1.1" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">描述</label>
+            <input type="text" id="ipDescription" placeholder="例如: 办公室IP" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+          </div>
+          <div class="flex justify-end space-x-3">
+            <button class="px-4 py-2 text-gray-600 hover:text-gray-800" onclick="this.closest('.fixed').remove()">取消</button>
+            <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600" id="confirmAddIp">确认</button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      document.getElementById('confirmAddIp').addEventListener('click', function() {
+        const address = document.getElementById('ipAddress').value.trim();
+        const description = document.getElementById('ipDescription').value.trim();
+        
+        if (!address) {
+          alert('请输入IP地址');
+          return;
+        }
+        
+        // 简单的IP格式验证
+        const ipRegex = /^(\d{1,3}\.){3}\d{1,3}(\/\d{1,2})?$/;
+        if (!ipRegex.test(address)) {
+          alert('请输入有效的IP地址格式');
+          return;
+        }
+        
+        ipWhitelist.push({
+          address,
+          description,
+          createdAt: new Date().toLocaleDateString()
+        });
+        
+        localStorage.setItem('ipWhitelist', JSON.stringify(ipWhitelist));
+        renderIpWhitelistTable();
+        modal.remove();
+      });
+    });
+    
+    // 编辑IP白名单
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.edit-ip')) {
+        const row = e.target.closest('tr');
+        const index = parseInt(row.dataset.index);
+        const ip = ipWhitelist[index];
+        
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        modal.innerHTML = `
+          <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-96">
+            <h3 class="text-lg font-medium mb-4">编辑IP白名单</h3>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">IP地址</label>
+              <input type="text" id="editIpAddress" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50" value="${ip.address}">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">描述</label>
+              <input type="text" id="editIpDescription" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50" value="${ip.description}">
+            </div>
+            <div class="flex justify-end space-x-3">
+              <button class="px-4 py-2 text-gray-600 hover:text-gray-800" onclick="this.closest('.fixed').remove()">取消</button>
+              <button class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600" id="confirmEditIp" data-index="${index}">保存</button>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        document.getElementById('confirmEditIp').addEventListener('click', function() {
+          const index = parseInt(this.dataset.index);
+          const address = document.getElementById('editIpAddress').value.trim();
+          const description = document.getElementById('editIpDescription').value.trim();
+          
+          if (!address) {
+            alert('请输入IP地址');
+            return;
+          }
+          
+          // 简单的IP格式验证
+          const ipRegex = /^(\d{1,3}\.){3}\d{1,3}(\/\d{1,2})?$/;
+          if (!ipRegex.test(address)) {
+            alert('请输入有效的IP地址格式');
+            return;
+          }
+          
+          ipWhitelist[index] = {
+            ...ipWhitelist[index],
+            address,
+            description,
+            updatedAt: new Date().toLocaleDateString()
+          };
+          
+          localStorage.setItem('ipWhitelist', JSON.stringify(ipWhitelist));
+          renderIpWhitelistTable();
+          modal.remove();
+        });
+      }
+    });
+    
+    // 删除IP白名单
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.delete-ip')) {
+        const row = e.target.closest('tr');
+        const index = parseInt(row.dataset.index);
+        
+        if (confirm('确定要删除这个IP白名单记录吗？')) {
+          ipWhitelist.splice(index, 1);
+          localStorage.setItem('ipWhitelist', JSON.stringify(ipWhitelist));
+          renderIpWhitelistTable();
+        }
+      }
+    });
+    
+    // 保存访问频率限制
+    document.getElementById('saveRateLimit')?.addEventListener('click', function() {
+      const requestsPerMinute = document.getElementById('requestsPerMinute').value;
+      const requestsPerDay = document.getElementById('requestsPerDay').value;
+      
+      if (!requestsPerMinute || isNaN(requestsPerMinute) || parseInt(requestsPerMinute) < 1) {
+        alert('请输入有效的每分钟请求数限制');
+        return;
+      }
+      
+      if (!requestsPerDay || isNaN(requestsPerDay) || parseInt(requestsPerDay) < 1) {
+        alert('请输入有效的每日请求数限制');
+        return;
+      }
+      
+      const rateLimit = {
+        perMinute: parseInt(requestsPerMinute),
+        perDay: parseInt(requestsPerDay),
+        updatedAt: new Date().toISOString()
+      };
+      
+      localStorage.setItem('rateLimit', JSON.stringify(rateLimit));
+      alert('访问频率限制设置已保存');
+    });
+    
+    // 加载访问频率限制设置
+    function loadRateLimit() {
+      const rateLimit = JSON.parse(localStorage.getItem('rateLimit') || '{"perMinute": 60, "perDay": 10000}');
+      
+      const perMinuteInput = document.getElementById('requestsPerMinute');
+      const perDayInput = document.getElementById('requestsPerDay');
+      
+      if (perMinuteInput) perMinuteInput.value = rateLimit.perMinute;
+      if (perDayInput) perDayInput.value = rateLimit.perDay;
+    }
+    
+    // 在页面切换时初始化相应功能
+    document.addEventListener('click', function(e) {
+      const menuItem = e.target.closest('[id^="menu-"]');
+      if (!menuItem) return;
+      
+      const menuId = menuItem.id;
+      const pageId = menuMap[menuId];
+      
+      if (pageId === 'page-api-config') {
+        setTimeout(renderApiConfigTable, 100);
+      } else if (pageId === 'page-api-access') {
+        setTimeout(() => {
+          renderIpWhitelistTable();
+          loadRateLimit();
+        }, 100);
+      }
+    });
+
+    // 查看代码功能
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.view-code')) {
+        const index = parseInt(e.target.closest('.view-code').dataset.index);
+        const config = apiConfigList[index];
+        
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        modal.innerHTML = `
+          <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-[600px]">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-medium">JS调用代码 - ${config.name}</h3>
+              <button class="text-gray-500 hover:text-gray-700" onclick="this.closest('.fixed').remove()">
+                <i class="fa-solid fa-times"></i>
+              </button>
+            </div>
+            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 mb-4 overflow-auto max-h-[400px]">
+              <pre class="text-sm font-mono whitespace-pre-wrap">${config.jsCode || '// 未设置JS调用代码'}</pre>
+            </div>
+            <div class="mb-4">
+              <h4 class="font-medium mb-2">使用示例:</h4>
+              <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+                <pre class="text-sm font-mono">// 获取接口配置信息
+const config = apiConfigList.find(c => c.name === '${config.name}');
+
+// 调用检测函数
+if (config && config.jsCode) {
+  const jsFunction = new Function('return ' + config.jsCode)();
+  const result = await jsFunction(fileObject);
+  console.log(result);
+}</pre>
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <button class="px-4 py-2 bg-gray-200 dark:bg-gray-600 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500" onclick="this.closest('.fixed').remove()">
+                关闭
+              </button>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(modal);
+      }
+    });
+    
+    // 生成接口配置的JS代码使用范例
+    function generateApiJsUsage() {
+      return `// 示例：如何在前端页面集成API接口
+
+// 获取可用的接口配置
+const getApiConfigs = () => {
+  return JSON.parse(localStorage.getItem('apiConfigList') || '[]')
+    .filter(config => config.status === 'active');
+};
+
+// 调用指定接口的检测函数
+async function callApiDetect(apiName, file) {
+  const configs = getApiConfigs();
+  const config = configs.find(c => c.name === apiName);
+  
+  if (!config || !config.jsCode) {
+    throw new Error(\`接口 "\${apiName}" 未找到或未配置调用代码\`);
+  }
+  
+  try {
+    // 将JS代码字符串转换为可执行函数
+    const detectFn = new Function('return ' + config.jsCode)();
+    // 调用检测函数
+    return await detectFn(file);
+  } catch (error) {
+    console.error(\`调用接口 "\${apiName}" 失败:\`, error);
+    throw error;
+  }
+}
+
+// 使用示例
+async function detectImage(file) {
+  try {
+    // 调用AIORNOT API
+    const aiNotResult = await callApiDetect('AIORNOT API', file);
+    
+    // 调用Google Vision API
+    const googleResult = await callApiDetect('Google Vision API', file);
+    
+    // 整合结果
+    return {
+      probability: aiNotResult.probability,
+      apis: {
+        AIORNOT: aiNotResult.probability,
+        Google: googleResult.probability
+      }
+    };
+  } catch (error) {
+    console.error('检测失败:', error);
+    throw error;
+  }
+}`;
+    }
+    
+    // 初始化渲染
+    renderApiTable();
+    
+    // 检查是否有接口集成帮助信息按钮，如果有则添加事件
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('#apiIntegrationHelp')) {
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        modal.innerHTML = `
+          <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-[700px]">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-medium">接口集成帮助</h3>
+              <button class="text-gray-500 hover:text-gray-700" onclick="this.closest('.fixed').remove()">
+                <i class="fa-solid fa-times"></i>
+              </button>
+            </div>
+            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 mb-4 overflow-auto max-h-[500px]">
+              <pre class="text-sm font-mono whitespace-pre-wrap">${generateApiJsUsage()}</pre>
+            </div>
+            <div class="flex justify-end">
+              <button class="px-4 py-2 bg-gray-200 dark:bg-gray-600 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500" onclick="this.closest('.fixed').remove()">
+                关闭
+              </button>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(modal);
+      }
+    });
+    
+    // 为接口配置页面添加帮助按钮
+    const configPageHeader = document.querySelector('#page-api-config .flex.items-center.justify-between.mb-6');
+    if (configPageHeader) {
+      const helpButton = document.createElement('button');
+      helpButton.className = 'ml-4 text-primary hover:text-primary-600';
+      helpButton.id = 'apiIntegrationHelp';
+      helpButton.innerHTML = '<i class="fa-solid fa-question-circle"></i>';
+      helpButton.title = '接口集成帮助';
+      
+      const addButton = configPageHeader.querySelector('button');
+      configPageHeader.insertBefore(helpButton, addButton);
+    }
+
+    // 版本管理功能
+    let versionInfo = {
+      current: 'v1.0.0',
+      lastUpdate: '2024-03-15',
+      repository: 'https://github.com/homanho1234568/Harkerthon-AIpicturecheck.git',
+      branch: 'main',
+      latestCommit: '',
+      hasUpdate: false
+    };
+    
+    // 初始化版本信息
+    function initVersionInfo() {
+      // 尝试从本地存储加载版本信息
+      const savedInfo = JSON.parse(localStorage.getItem('versionInfo') || '{}');
+      if (savedInfo.current) versionInfo = {...versionInfo, ...savedInfo};
+      
+      // 更新UI显示
+      document.getElementById('currentVersion').textContent = versionInfo.current;
+      document.getElementById('lastUpdateTime').textContent = `最后更新：${versionInfo.lastUpdate}`;
+      document.getElementById('currentBranch').textContent = versionInfo.branch;
+      document.getElementById('latestCommit').textContent = versionInfo.latestCommit || '获取中...';
+    }
+    
+    // 检查更新功能
+    document.getElementById('checkUpdate')?.addEventListener('click', async function() {
+      // 更新状态显示
+      const updateStatus = document.getElementById('updateStatus');
+      updateStatus.textContent = '正在检查更新...';
+      
+      try {
+        // 模拟调用后端API检查更新
+        // 在实际应用中，这里应该是一个真实的API调用
+        // fetch('/api/check-update', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({ 
+        //     repository: versionInfo.repository,
+        //     branch: versionInfo.branch
+        //   })
+        // })
+        
+        // 模拟API响应
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // 模拟检查结果
+        const mockApiResponse = {
+          success: true,
+          hasUpdate: Math.random() > 0.5, // 随机决定是否有更新
+          remoteCommit: {
+            hash: '8f' + Math.random().toString(16).substr(2, 6),
+            message: '',
+            date: new Date().toISOString()
+          },
+          currentCommit: {
+            hash: '7a' + Math.random().toString(16).substr(2, 6),
+            date: versionInfo.lastUpdate
+          }
+        };
+        
+        // 模拟提交信息
+        const commitMessages = [
+          'feat: 优化识别算法精度',
+          'fix: 修复图片处理异常',
+          'feat: 新增批量处理功能',
+          'docs: 更新API文档',
+          'refactor: 重构后端代码'
+        ];
+        mockApiResponse.remoteCommit.message = commitMessages[Math.floor(Math.random() * commitMessages.length)];
+        
+        // 更新UI
+        if (mockApiResponse.hasUpdate) {
+          updateStatus.textContent = '发现新版本！';
+          document.getElementById('doUpdate').classList.remove('hidden');
+          
+          // 更新最新提交信息
+          const commitDate = new Date(mockApiResponse.remoteCommit.date).toISOString().split('T')[0];
+          document.getElementById('latestCommit').textContent = 
+            `${mockApiResponse.remoteCommit.message} (${commitDate}) [${mockApiResponse.remoteCommit.hash.substring(0,7)}]`;
+          
+          versionInfo.hasUpdate = true;
+          versionInfo.remoteCommit = mockApiResponse.remoteCommit;
+        } else {
+          updateStatus.textContent = '当前已是最新版本';
+          document.getElementById('doUpdate').classList.add('hidden');
+          versionInfo.hasUpdate = false;
+          
+          // 更新最新提交信息（与本地相同）
+          const commitDate = new Date(mockApiResponse.currentCommit.date).toISOString().split('T')[0];
+          document.getElementById('latestCommit').textContent = 
+            `当前已是最新版本 (${commitDate}) [${mockApiResponse.currentCommit.hash.substring(0,7)}]`;
+        }
+      } catch (error) {
+        updateStatus.textContent = '检查更新失败，请稍后再试';
+        console.error('检查更新失败:', error);
+      }
+    });
+    
+    // 执行更新功能
+    document.getElementById('doUpdate')?.addEventListener('click', async function() {
+      if (!versionInfo.hasUpdate) {
+        alert('当前已是最新版本，无需更新');
+        return;
+      }
+      
+      if (!confirm('确定要更新系统吗？更新过程中系统可能暂时不可用。')) {
+        return;
+      }
+      
+      // 隐藏更新按钮，显示进度条
+      document.getElementById('doUpdate').classList.add('hidden');
+      const progressContainer = document.getElementById('updateProgressContainer');
+      const progressBar = document.getElementById('updateProgress');
+      const updateStatus = document.getElementById('updateStatus');
+      
+      progressContainer.classList.remove('hidden');
+      updateStatus.textContent = '正在更新系统...';
+      
+      try {
+        // 在实际环境中，这里应该是一个真实的API调用，例如：
+        // const updateResponse = await fetch('/api/update', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({ 
+        //     repository: versionInfo.repository,
+        //     branch: versionInfo.branch
+        //   })
+        // });
+        // 
+        // 实时更新进度
+        // const eventSource = new EventSource('/api/update-progress');
+        // eventSource.onmessage = (event) => {
+        //   const data = JSON.parse(event.data);
+        //   progressBar.style.width = `${data.progress}%`;
+        //   updateStatus.textContent = data.message;
+        //   if (data.progress >= 100) {
+        //     eventSource.close();
+        //   }
+        // };
+        
+        // 模拟更新过程
+        const updateSteps = [
+          { progress: 10, message: '正在拉取最新代码...' },
+          { progress: 30, message: '正在执行git pull...' },
+          { progress: 50, message: '正在安装依赖...' },
+          { progress: 70, message: '正在编译代码...' },
+          { progress: 90, message: '正在重启服务...' },
+          { progress: 100, message: '更新成功！' }
+        ];
+        
+        for (const step of updateSteps) {
+          progressBar.style.width = `${step.progress}%`;
+          updateStatus.textContent = step.message;
+          await new Promise(resolve => setTimeout(resolve, 800));
+        }
+        
+        // 更新完成
+        // 更新版本信息
+        const newVersion = parseFloat(versionInfo.current.replace('v', '')) + 0.1;
+        versionInfo.current = `v${newVersion.toFixed(1)}`;
+        versionInfo.lastUpdate = new Date().toISOString().split('T')[0];
+        versionInfo.hasUpdate = false;
+        versionInfo.latestCommit = versionInfo.remoteCommit?.hash || '';
+        
+        // 保存到本地存储
+        localStorage.setItem('versionInfo', JSON.stringify(versionInfo));
+        
+        // 更新UI显示
+        document.getElementById('currentVersion').textContent = versionInfo.current;
+        document.getElementById('lastUpdateTime').textContent = `最后更新：${versionInfo.lastUpdate}`;
+        
+        // 添加更新日志
+        const logItem = document.createElement('li');
+        const commitMsg = versionInfo.remoteCommit?.message || '系统更新';
+        logItem.textContent = `• ${versionInfo.current} (${versionInfo.lastUpdate}): ${commitMsg}`;
+        document.getElementById('updateLogs').prepend(logItem);
+        
+        // 3秒后隐藏进度条
+        setTimeout(() => {
+          progressContainer.classList.add('hidden');
+        }, 3000);
+        
+      } catch (error) {
+        updateStatus.textContent = '更新失败，请联系管理员';
+        console.error('更新失败:', error);
+      }
+    });
+    
+    // 在切换到版本管理页面时初始化版本信息
+    document.addEventListener('click', function(e) {
+      const menuItem = e.target.closest('[id^="menu-"]');
+      if (!menuItem) return;
+      
+      const menuId = menuItem.id;
+      const pageId = menuMap[menuId];
+      
+      if (pageId === 'page-api-version') {
+        setTimeout(initVersionInfo, 100);
+      }
+      // ... existing code for other page initializations ...
+    });
+
+    // IP黑名单功能
+    let ipBlacklist = JSON.parse(localStorage.getItem('ipBlacklist') || '[]');
+    
+    // 初始化IP黑名单列表
+    function renderIpBlacklistTable() {
+      const tbody = document.getElementById('ipBlacklistTable');
+      if (!tbody) return;
+      
+      // 清理过期的IP黑名单
+      const now = new Date().getTime();
+      ipBlacklist = ipBlacklist.filter(ip => {
+        if (ip.expireAt) {
+          const expireTime = new Date(ip.expireAt).getTime();
+          return expireTime > now;
+        }
+        return true; // 没有过期时间的永久封禁
+      });
+      localStorage.setItem('ipBlacklist', JSON.stringify(ipBlacklist));
+      
+      let html = '';
+      ipBlacklist.forEach((ip, index) => {
+        const expireDate = ip.expireAt ? new Date(ip.expireAt).toLocaleString() : '永久封禁';
+        html += `
+          <tr class="table-row-hover ${index % 2 === 0 ? 'table-row-odd' : 'table-row-even'}" data-index="${index}">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">${ip.address}</td>
+            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">${ip.reason || '未指定'}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${ip.createdAt}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${expireDate}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-3">
+              <button class="text-primary hover:text-primary-600 edit-blackip" title="编辑">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+              <button class="text-danger-500 hover:text-danger-600 delete-blackip" title="移除封禁">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      
+      if (ipBlacklist.length === 0) {
+        html = `
+          <tr>
+            <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+              暂无封禁IP记录
+            </td>
+          </tr>
+        `;
+      }
+      
+      tbody.innerHTML = html;
+    }
+    
+    // 添加IP黑名单
+    document.getElementById('addIpBlacklist')?.addEventListener('click', function() {
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+      modal.innerHTML = `
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-96">
+          <h3 class="text-lg font-medium mb-4">添加IP黑名单</h3>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">IP地址</label>
+            <input type="text" id="blackIpAddress" placeholder="例如: 192.168.1.1" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">封禁原因</label>
+            <input type="text" id="blackIpReason" placeholder="例如: 恶意请求" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">封禁时长</label>
+            <div class="flex space-x-2">
+              <select id="blackIpDuration" class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+                <option value="1h">1小时</option>
+                <option value="24h" selected>24小时</option>
+                <option value="7d">7天</option>
+                <option value="30d">30天</option>
+                <option value="permanent">永久</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex justify-end space-x-3">
+            <button class="px-4 py-2 text-gray-600 hover:text-gray-800" onclick="this.closest('.fixed').remove()">取消</button>
+            <button class="px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger-600" id="confirmAddBlackIp">确认封禁</button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      document.getElementById('confirmAddBlackIp').addEventListener('click', function() {
+        const address = document.getElementById('blackIpAddress').value.trim();
+        const reason = document.getElementById('blackIpReason').value.trim();
+        const duration = document.getElementById('blackIpDuration').value;
+        
+        if (!address) {
+          alert('请输入IP地址');
+          return;
+        }
+        
+        // 简单的IP格式验证
+        const ipRegex = /^(\d{1,3}\.){3}\d{1,3}(\/\d{1,2})?$/;
+        if (!ipRegex.test(address)) {
+          alert('请输入有效的IP地址格式');
+          return;
+        }
+        
+        let expireAt = null;
+        if (duration !== 'permanent') {
+          const now = new Date();
+          if (duration === '1h') {
+            now.setHours(now.getHours() + 1);
+          } else if (duration === '24h') {
+            now.setHours(now.getHours() + 24);
+          } else if (duration === '7d') {
+            now.setDate(now.getDate() + 7);
+          } else if (duration === '30d') {
+            now.setDate(now.getDate() + 30);
+          }
+          expireAt = now.toISOString();
+        }
+        
+        // 检查是否已存在该IP
+        const existingIndex = ipBlacklist.findIndex(ip => ip.address === address);
+        if (existingIndex >= 0) {
+          ipBlacklist[existingIndex] = {
+            ...ipBlacklist[existingIndex],
+            reason,
+            expireAt,
+            updatedAt: new Date().toLocaleString()
+          };
+        } else {
+          ipBlacklist.push({
+            address,
+            reason,
+            expireAt,
+            createdAt: new Date().toLocaleString()
+          });
+        }
+        
+        localStorage.setItem('ipBlacklist', JSON.stringify(ipBlacklist));
+        renderIpBlacklistTable();
+        modal.remove();
+      });
+    });
+    
+    // 编辑IP黑名单
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.edit-blackip')) {
+        const row = e.target.closest('tr');
+        const index = parseInt(row.dataset.index);
+        const ip = ipBlacklist[index];
+        
+        // 转换持续时间为选择值
+        let durationValue = 'permanent';
+        if (ip.expireAt) {
+          const now = new Date();
+          const expire = new Date(ip.expireAt);
+          const diffHours = Math.round((expire - now) / (1000 * 60 * 60));
+          
+          if (diffHours <= 1) durationValue = '1h';
+          else if (diffHours <= 24) durationValue = '24h';
+          else if (diffHours <= 24 * 7) durationValue = '7d';
+          else durationValue = '30d';
+        }
+        
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        modal.innerHTML = `
+          <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-96">
+            <h3 class="text-lg font-medium mb-4">编辑IP黑名单</h3>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">IP地址</label>
+              <input type="text" id="editBlackIpAddress" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50" value="${ip.address}" readonly>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">封禁原因</label>
+              <input type="text" id="editBlackIpReason" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50" value="${ip.reason || ''}">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">封禁时长</label>
+              <div class="flex space-x-2">
+                <select id="editBlackIpDuration" class="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50">
+                  <option value="1h" ${durationValue === '1h' ? 'selected' : ''}>1小时</option>
+                  <option value="24h" ${durationValue === '24h' ? 'selected' : ''}>24小时</option>
+                  <option value="7d" ${durationValue === '7d' ? 'selected' : ''}>7天</option>
+                  <option value="30d" ${durationValue === '30d' ? 'selected' : ''}>30天</option>
+                  <option value="permanent" ${durationValue === 'permanent' ? 'selected' : ''}>永久</option>
+                </select>
+              </div>
+            </div>
+            <div class="flex justify-end space-x-3">
+              <button class="px-4 py-2 text-gray-600 hover:text-gray-800" onclick="this.closest('.fixed').remove()">取消</button>
+              <button class="px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger-600" id="confirmEditBlackIp" data-index="${index}">保存</button>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        document.getElementById('confirmEditBlackIp').addEventListener('click', function() {
+          const index = parseInt(this.dataset.index);
+          const reason = document.getElementById('editBlackIpReason').value.trim();
+          const duration = document.getElementById('editBlackIpDuration').value;
+          
+          let expireAt = null;
+          if (duration !== 'permanent') {
+            const now = new Date();
+            if (duration === '1h') {
+              now.setHours(now.getHours() + 1);
+            } else if (duration === '24h') {
+              now.setHours(now.getHours() + 24);
+            } else if (duration === '7d') {
+              now.setDate(now.getDate() + 7);
+            } else if (duration === '30d') {
+              now.setDate(now.getDate() + 30);
+            }
+            expireAt = now.toISOString();
+          }
+          
+          ipBlacklist[index] = {
+            ...ipBlacklist[index],
+            reason,
+            expireAt,
+            updatedAt: new Date().toLocaleString()
+          };
+          
+          localStorage.setItem('ipBlacklist', JSON.stringify(ipBlacklist));
+          renderIpBlacklistTable();
+          modal.remove();
+        });
+      }
+    });
+    
+    // 删除IP黑名单
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.delete-blackip')) {
+        const row = e.target.closest('tr');
+        const index = parseInt(row.dataset.index);
+        
+        if (confirm('确定要解除该IP的封禁吗？')) {
+          ipBlacklist.splice(index, 1);
+          localStorage.setItem('ipBlacklist', JSON.stringify(ipBlacklist));
+          renderIpBlacklistTable();
+        }
+      }
+    });
+
+    // 初始化页面内容
+    document.addEventListener('DOMContentLoaded', function() {
+      renderApiTable();
+      // renderStatsTable(); // 暂时注释掉这个未定义的函数调用
+      renderIpWhitelistTable();
+      renderIpBlacklistTable();
+      initializeDashboardData();
+      
+      // 默认显示仪表盘页面
+      document.querySelectorAll('.page-section').forEach(page => {
+        page.classList.add('hidden');
+      });
+      document.getElementById('page-dashboard').classList.remove('hidden');
+      
+      // 默认激活仪表盘菜单
+      document.querySelectorAll('a').forEach(a => {
+        a.classList.remove('active-menu');
+      });
+      document.getElementById('menu-dashboard').classList.add('active-menu');
+    });
+    
+    // 添加仪表盘功能
+    let dashboardData = {
+      today: {
+        requestCount: 1205,
+        successRate: 99.2,
+        avgResponseTime: 176,
+        concurrentPeak: 43,
+        growth: {
+          requestCount: 5.8,
+          successRate: 0.3,
+          avgResponseTime: 2.1,
+          concurrentPeak: 8.5
+        }
+      },
+      week: {
+        requestCount: 5842,
+        successRate: 98.7,
+        avgResponseTime: 195,
+        concurrentPeak: 87,
+        growth: {
+          requestCount: 8.2,
+          successRate: 0.5,
+          avgResponseTime: 3.2,
+          concurrentPeak: 12.3
+        }
+      },
+      month: {
+        requestCount: 8942,
+        successRate: 98.7,
+        avgResponseTime: 245,
+        concurrentPeak: 156,
+        growth: {
+          requestCount: 12.5,
+          successRate: 0.9,
+          avgResponseTime: 5.2,
+          concurrentPeak: 21.8
+        }
+      }
+    };
+    
+    // 初始化仪表盘数据
+    function initializeDashboardData() {
+      updateDashboardData('month');
+      
+      // 监听时间范围选择
+      document.getElementById('dashboardTimeRange')?.addEventListener('change', function() {
+        updateDashboardData(this.value);
+      });
+    }
+    
+    // 更新仪表盘数据
+    function updateDashboardData(timeRange) {
+      const data = dashboardData[timeRange] || dashboardData.month;
+      
+      // 获取所有统计卡片
+      const cards = document.querySelectorAll('#page-dashboard .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4 > div');
+      
+      if (cards.length >= 4) {
+        // 更新总请求数
+        cards[0].querySelector('h3').textContent = data.requestCount.toLocaleString();
+        cards[0].querySelector('.text-success span').textContent = `${data.growth.requestCount}% 同比上升`;
+        
+        // 更新成功率
+        cards[1].querySelector('h3').textContent = data.successRate + '%';
+        cards[1].querySelector('.text-success span').textContent = `${data.growth.successRate}% 同比上升`;
+        
+        // 更新平均响应时间
+        cards[2].querySelector('h3').textContent = data.avgResponseTime + 'ms';
+        cards[2].querySelector('.text-danger span').textContent = `${data.growth.avgResponseTime}% 同比上升`;
+        
+        // 更新并发峰值
+        cards[3].querySelector('h3').textContent = data.concurrentPeak.toString();
+        cards[3].querySelector('.text-success span').textContent = `${data.growth.concurrentPeak}% 同比上升`;
+      }
+      
+      // 这里可以添加更新图表的代码
+    }
+    
+    // 菜单切换
+    document.getElementById('menu-dashboard')?.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // 隐藏所有页面
+      document.querySelectorAll('.page-section').forEach(page => {
+        page.classList.add('hidden');
+      });
+      
+      // 显示仪表盘页面
+      document.getElementById('page-dashboard').classList.remove('hidden');
+      
+      // 更新菜单状态
+      document.querySelectorAll('a').forEach(a => {
+        a.classList.remove('active-menu');
+      });
+      this.classList.add('active-menu');
+    });
+    
+    // 原有菜单点击处理
+    document.getElementById('menu-api')?.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // 隐藏所有页面
+      document.querySelectorAll('.page-section').forEach(page => {
+        page.classList.add('hidden');
+      });
+      
+      // 显示API管理页面
+      document.getElementById('page-api').classList.remove('hidden');
+      
+      // 更新菜单状态
+      document.querySelectorAll('a').forEach(a => {
+        a.classList.remove('active-menu');
+      });
+      this.classList.add('active-menu');
+    });
+    
+    // 接口配置菜单
+    document.getElementById('menu-api-config')?.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // 隐藏所有页面
+      document.querySelectorAll('.page-section').forEach(page => {
+        page.classList.add('hidden');
+      });
+      
+      // 显示接口配置页面
+      document.getElementById('page-api-config').classList.remove('hidden');
+      
+      // 更新菜单状态
+      document.querySelectorAll('a').forEach(a => {
+        a.classList.remove('active-menu');
+      });
+      this.classList.add('active-menu');
+    });
+    
+    // 访问控制菜单
+    document.getElementById('menu-api-access')?.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // 隐藏所有页面
+      document.querySelectorAll('.page-section').forEach(page => {
+        page.classList.add('hidden');
+      });
+      
+      // 显示访问控制页面
+      document.getElementById('page-api-access').classList.remove('hidden');
+      
+      // 更新菜单状态
+      document.querySelectorAll('a').forEach(a => {
+        a.classList.remove('active-menu');
+      });
+      this.classList.add('active-menu');
+    });
+    
+    // 统计分析菜单
+    document.getElementById('menu-stat')?.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // 隐藏所有页面
+      document.querySelectorAll('.page-section').forEach(page => {
+        page.classList.add('hidden');
+      });
+      
+      // 显示统计分析页面
+      document.getElementById('page-stat').classList.remove('hidden');
+      
+      // 更新菜单状态
+      document.querySelectorAll('a').forEach(a => {
+        a.classList.remove('active-menu');
+      });
+      this.classList.add('active-menu');
+    });
+  </script>
+</body>
+</html>

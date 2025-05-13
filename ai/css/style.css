@@ -1,0 +1,248 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', sans-serif;
+}
+
+h1, h3 {
+    color: #1a1a2e;
+    font-weight: 600;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.progress-bar {
+    background-color: #1e88e5;
+}
+
+#dropZone {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#dropZone:hover {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+#dropZone.bg-light {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.preview-img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.btn-primary {
+    background-color: #1e88e5;
+    border-color: #1e88e5;
+}
+
+.btn-primary:hover {
+    background-color: #0d47a1;
+    border-color: #0d47a1;
+}
+
+.btn-success {
+    background-color: #43a047;
+    border-color: #43a047;
+}
+
+.btn-success:hover {
+    background-color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.result-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    height: 100%;
+    background-color: #fff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.result-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.probability-badge {
+    font-weight: bold;
+    padding: 5px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.probability-high {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+}
+
+.probability-medium {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: #fd7e14;
+}
+
+.probability-low {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+}
+
+.probability-none {
+    background-color: rgba(108, 117, 125, 0.2);
+    color: #6c757d;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.text-warning {
+    color: #fd7e14 !important;
+}
+
+.api-unavailable {
+    color: #dc3545;
+    font-style: italic;
+}
+
+.spinner-border {
+    animation: spin 1s linear infinite;
+}
+
+#probabilityChart {
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    background-color: white;
+    padding: 10px;
+}
+
+/* 添加API状态表格样式 */
+#apiStatusDiv {
+    margin-top: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#apiStatusDiv .card-title {
+    color: #6c757d;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+#apiStatusDiv .table {
+    font-size: 0.9rem;
+}
+
+#apiStatusDiv .badge {
+    font-weight: 400;
+    padding: 0.5em 0.7em;
+}
+
+#apiStatusDiv .alert-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-color: rgba(255, 193, 7, 0.2);
+}
+
+#apiStatusDiv .btn-sm {
+    font-size: 0.8rem;
+}
+
+#apiStatusDivFixed {
+    margin-top: 2rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    border-left: 5px solid #fd7e14;
+}
+
+#apiStatusDivFixed .card-title {
+    color: #fd7e14;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+#apiStatusDivFixed .table {
+    font-size: 0.95rem;
+}
+
+#apiStatusDivFixed .badge {
+    font-weight: 500;
+    padding: 0.5em 0.7em;
+}
+
+#apiStatusDivFixed .alert-warning {
+    background-color: rgba(255, 193, 7, 0.15);
+    border-color: rgba(255, 193, 7, 0.3);
+    border-radius: 8px;
+}
+
+#apiStatusDivFixed ul {
+    background-color: rgba(220, 53, 69, 0.05);
+    padding: 15px 30px;
+    border-radius: 8px;
+}
+
+#apiStatusDivFixed ul li {
+    margin-bottom: 8px;
+}
+
+.text-50-warning {
+    background-color: #ffecb5;
+    color: #d6370c;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+/* 加载动画样式 */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 卡片标题样式 */
+.card-title {
+    color: #343a40;
+    margin-bottom: 0;
+}
+
+/* 导航栏样式调整 */
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* 页脚样式 */
+footer {
+    border-top: 1px solid #e0e0e0;
+}
+
+/* 模拟控制器自定义样式 */
+#simulation-controller {
+    user-select: none;
+}
+
+#simulation-panel {
+    font-size: 12px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .preview-img {
+        max-height: 150px;
+    }
+    
+    #dropZone {
+        padding: 20px;
+    }
+} 

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 图像检测系统</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+primary: '#2563eb',
+secondary: '#64748b'
+},
+borderRadius: {
+'none': '0px',
+'sm': '2px',
+DEFAULT: '4px',
+'md': '8px',
+'lg': '12px',
+'xl': '16px',
+'2xl': '20px',
+'3xl': '24px',
+'full': '9999px',
+'button': '4px'
+}
+}
+}
+}
+</script>
+</head>
+<body class="bg-gray-50 min-h-[1024px]">
+<div class="flex min-h-screen">
+<div class="flex flex-col justify-center items-center w-full">
+<div class="w-[420px] bg-white rounded-lg shadow-lg p-8">
+<div class="text-center mb-8">
+<h1 class="font-['Pacifico'] text-3xl text-primary mb-2">HMTGSS</h1>
+<p class="text-gray-600">AI 图像检测系统</p>
+</div>
+<form class="space-y-6" id="loginForm" autocomplete="off">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">用户名</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+<i class="fas fa-user w-4 h-4 flex justify-center items-center"></i>
+</span>
+<input type="text" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-button text-sm" placeholder="请输入用户名" autocomplete="username" required>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">密码</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+<i class="fas fa-lock w-4 h-4 flex justify-center items-center"></i>
+</span>
+<input type="password" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-button text-sm" placeholder="请输入密码" autocomplete="current-password" required>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<input type="checkbox" class="h-4 w-4 text-primary border-gray-300 rounded">
+<label class="ml-2 text-sm text-gray-600">记住密码</label>
+</div>
+<a href="#" class="text-sm text-primary hover:text-primary/80">忘记密码？</a>
+</div>
+<button type="submit" class="w-full bg-primary text-white py-2 px-4 rounded-button hover:bg-primary/90 transition-colors whitespace-nowrap">
+登录
+</button>
+</form>
+<div id="loginError" class="text-red-500 text-center mt-4 hidden">用户名或密码错误</div>
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const username = this.querySelector('input[type="text"]').value.trim();
+    const password = this.querySelector('input[type="password"]').value.trim();
+    if(username === 'admin' && password === '123456') {
+        localStorage.setItem('isLoggedIn', '1');
+        window.location.href = 'admin.html';
+    } else {
+        document.getElementById('loginError').classList.remove('hidden');
+    }
+});
+if(localStorage.getItem('isLoggedIn') === '1') window.location.href = 'admin.html';
+</script>
+</div>
+<div class="mt-8 text-center text-sm text-gray-500">
+<p>© 2025 HMTGSS AI</p>
+<div class="mt-2">
+<a href="#" class="text-primary hover:text-primary/80">使用条款</a>
+<span class="mx-2">·</span>
+<a href="#" class="text-primary hover:text-primary/80">隐私政策</a>
+<span class="mx-2">·</span>
+<a href="#" class="text-primary hover:text-primary/80">帮助中心</a>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
